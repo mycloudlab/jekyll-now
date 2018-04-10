@@ -2,14 +2,23 @@
 layout: page
 title: About
 permalink: /about/
+published: true
 ---
 
-Some information about you!
+Atuo como Arquiteto de software na [CAPES - Coordenação de Pessoal de Ensino Superior](http://www.capes.gov.br)
 
-### More Information
+Neste blog estou sumarizando a minha experiência em cloud computing, da infra ao desenvolvimento.
 
-A place to include any other types of information that you'd like to include about yourself.
+Espero poder ajudar com:
 
-### Contact me
+- Desenvolvimento de aplicações "native cloud".
+- Montagem de infraestrutura de produção para execução de cloud.
+- Metodologia DEVOPS.
+- Ambientes de desenvolvimento para cloud
+- Microservices
 
-[email@domain.com](mailto:email@domain.com)
+E muitos outros assuntos que estou vivenciando nestes mais de 20 anos de TI.
+
+### Email para Contato
+
+[euprogramador@gmail.com](mailto:euprogramador@gmail.com)
