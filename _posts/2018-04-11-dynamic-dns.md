@@ -1,8 +1,9 @@
 ---
 published: true
 layout: post
+title: Servidor de DNS dinâmico
 ---
-## Como fazer um servidor de DNS para testes
+
 
 
 Com o 
