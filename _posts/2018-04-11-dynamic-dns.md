@@ -1,5 +1,6 @@
 ---
-published: false
+published: true
+layout: post
 ---
 ## Como fazer um servidor de DNS para testes
 
