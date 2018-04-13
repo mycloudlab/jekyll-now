@@ -22,4 +22,78 @@ Pode ser definido um post-processador que após a geração do template, efetue 
 
 Vamos a parte prática:
 
+Crie a seguinte estrutura de pasta:
+
+```bash
+packer
+  |
+  +-- http
+```
+
+Primeiro precisamos entender que a instalação tem diversos passos como configurar usuário, setar timezone, configuração de bootloader, partições de disco rede, firewall, etc... 
+
+A redhat criou um projeto chamado [kickstart](https://en.wikipedia.org/wiki/Kickstart_(Linux)), que é usado para definir todos os passos acima em código, e diversos sistemas operacionais são compativeis com o kickstart!
+
+o kickstart é fornecido via rede para o sistema de build da imagem, então na pasta http devemos criar um arquivo chamado **anaconda-ks.cfg**:
+
+```text
+#version=DEVEL
+# System authorization information
+#auth --enableshadow --passalgo=sha512
+# Use CDROM installation media
+#cdrom
+# Use graphical install
+#graphical
+# Run the Setup Agent on first boot
+firstboot --enable
+ignoredisk --only-use=sda
+# Keyboard layouts
+keyboard --vckeymap=br --xlayouts='br'
+# System language
+lang en_US.UTF-8
+
+
+eula --agreed
+reboot
+
+# Network information
+network  --bootproto=dhcp --device=enp0s3 --onboot=off --noipv6 
+
+# Root password
+rootpw --plaintext root
+
+firewall --service=ssh
+
+# System services
+services --enabled=NetworkManager,sshd,chronyd
+
+# System timezone
+timezone America/New_York --isUtc
+
+# System bootloader configuration
+bootloader --append=" crashkernel=auto" --location=mbr --boot-drive=sda
+autopart --type=lvm
+
+# Partition clearing information
+clearpart --none --initlabel
+
+%packages
+@^minimal
+@core
+chrony
+kexec-tools
+
+%end
+
+%addon com_redhat_kdump --enable --reserve-mb='auto'
+
+%end
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
+pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
+%end
+```
+
 
