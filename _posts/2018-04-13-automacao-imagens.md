@@ -10,17 +10,23 @@ Uma das facilidades do docker é a criação de uma imagem para execução das a
 
 Geralmente as ferramentas de virtualização (vmware, virtualbox, kvm, xen, etc...) permitem a criação de máquinas de template, entretanto a criação destes templates, geralmente é feita na mão é com isso não podemos replicar o sucesso ou falha do processo.
 
-Idealmente o melhor seria fazer a instalação do sistema operacional na vm de forma automatizada. Para isso existe uma de fazer isso, o projeto chamasse [packer](https://www.packer.io/).
+Idealmente o melhor seria fazer a instalação do sistema operacional na vm de forma automatizada. Para isso temos o [packer](https://www.packer.io/).
 
 Packer é um projeto da hashicorp que permite o build automatizado de imagens.
 
-O build é definido em código usando um arquivo em json (template), um template permite a construção de imagens nas mais diversas tecnologias de virtualização, inclusive nuvem (amazon ec2).
+O build é definido em código usando um arquivo em json (template), um template permite a construção de imagens nas mais diversas tecnologias de virtualização, inclusive na nuvem (amazon ec2).
 
-Após a criação das imagens pode ser feito o provisionamento do servidor usando bashscript, ansible, puppet, chef, etc...
+Após a criação das imagens pode ser feito o provisionamento do servidor usando [bashscript](http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html), [ansible](https://www.ansible.com/), [puppet](https://puppet.com/), [chef](https://www.chef.io/chef/), etc...
 
 Pode ser definido um post-processador que após a geração do template, efetue a compactação da imagem, o envio para uma cloud, etc...
 
+O uso do packer ajuda muito a criar uma infra completamente definida em código.
+
 Vamos a parte prática:
+
+O projeto está disponível no github em: [https://github.com/mycloudlab/packer-virtualbox-centos7-demo](https://github.com/mycloudlab/packer-virtualbox-centos7-demo), você pode fazer um clone do projeto e seguir a seção building do README.md.
+
+Abaixo descrevo o funcionamento da solução de forma interativa e prática.
 
 Crie a seguinte estrutura de pasta:
 
@@ -30,11 +36,11 @@ packer
   +-- http
 ```
 
-Primeiro precisamos entender que a instalação tem diversos passos como configurar usuário, setar timezone, configuração de bootloader, partições de disco rede, firewall, etc... 
+A instalação de um sistema operacional conta com diversos passos, como configurar usuário, setar timezone, configuração de bootloader, partições de disco rede, firewall, etc... 
 
-A redhat criou um projeto chamado [kickstart](https://en.wikipedia.org/wiki/Kickstart_(Linux)), que é usado para definir todos os passos acima em código, e diversos sistemas operacionais são compativeis com o kickstart!
+A redhat criou um projeto chamado [kickstart](https://en.wikipedia.org/wiki/Kickstart_(Linux)), que é usado para definir todos os passos acima em código usando um arquivo KS (KickStart), e diversos sistemas operacionais são compativeis com o kickstart!
 
-o kickstart é fornecido via rede (http) para o sistema de build da imagem, então na pasta http devemos criar um arquivo chamado **anaconda-ks.cfg**:
+o kickstart é fornecido via rede (http) para o sistema de build da imagem, o packer sobe um servidor http durante a instalação, então na pasta http devemos criar um arquivo chamado **anaconda-ks.cfg**, esta pasta (http) também pode ser usada para carregar arquivos posteriormente a instalação:
 
 ```text
 #version=DEVEL
@@ -157,6 +163,20 @@ Agora vamos fazer o template e criar o script de provisionamento, na pasta packe
 Com isso podemos agora criar o arquivo configure-image.sh que será usado para configurar o servidor após instalação do SO:
 
 Crie na pasta packer o arquivo **configure-image.sh**, neste arquivo você pode colocar todos os comandos que desejar para configurar o novo servidor, para uma instalação no virtualbox costumo fazer a instalação do vbox guest additions, pois melhora o suporte do virtualbox ao servidor virtual, abaixo segue o conteúdo que faz a instalação:
+```bash
+#!/bin/bash
+
+yum update -y
+yum install dkms gcc make kernel-devel \
+  bzip2 binutils patch libgomp glibc-headers \
+  glibc-devel kernel-headers kernel-devel-$(uname -r) -y
+
+ISO=$(ls ~/*.iso)
+mount -o loop $ISO /mnt
+cd /mnt
+./VBoxLinuxAdditions.run
+```
+
 
 
 Feito isso agora efetuamos o build via packer com o comando abaixo(o packer deve ser instalado antes):
@@ -168,3 +188,10 @@ Este comando deve ser executado de dentro da pasta do packer.
 No final do processo será criado uma pasta **output-iso-base** que conterá a imagem do sistema no formato vmdk, agora basta importar no virtualbox e ser feliz!
 
 Para demonstrar o processo foi feito um vídeo no youtube que você pode ver isso funcionando, acesse o link e veja: 
+
+https://www.youtube.com/watch?v=KQ5DCl5WKI8
+
+
+> Tente mover o mundo - o primeiro passo será mover a si mesmo. - Platão 
+
+
