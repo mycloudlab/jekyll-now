@@ -34,7 +34,7 @@ Primeiro precisamos entender que a instalação tem diversos passos como configu
 
 A redhat criou um projeto chamado [kickstart](https://en.wikipedia.org/wiki/Kickstart_(Linux)), que é usado para definir todos os passos acima em código, e diversos sistemas operacionais são compativeis com o kickstart!
 
-o kickstart é fornecido via rede para o sistema de build da imagem, então na pasta http devemos criar um arquivo chamado **anaconda-ks.cfg**:
+o kickstart é fornecido via rede (http) para o sistema de build da imagem, então na pasta http devemos criar um arquivo chamado **anaconda-ks.cfg**:
 
 ```text
 #version=DEVEL
@@ -95,5 +95,75 @@ pwpolicy user --minlen=6 --minquality=1 --notstrict --nochanges --emptyok
 pwpolicy luks --minlen=6 --minquality=1 --notstrict --nochanges --notempty
 %end
 ```
+
+Agora vamos fazer o template e criar o script de provisionamento, na pasta packer crie o arquivo **centos-7-base.json**:
+
+
+
+```json
+{   
+    "builders": [
+        {
+            "type": "virtualbox-iso",
+            "boot_command": [
+                "<tab> <wait>",
+                "text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/anaconda-ks.cfg <wait>",
+                "<enter> <wait>"
+            ],
+            "boot_wait": "5s",
+            "disk_size": 81920,
+            "guest_os_type": "RedHat_64",
+            "headless": false,
+            "http_directory": "http",
+            "iso_urls": [
+                "http://centos.pop-es.rnp.br/7/isos/x86_64/CentOS-7-x86_64-Minimal-1708.iso"
+            ],
+            "iso_checksum_type": "md5",
+            "iso_checksum": "5848f2fd31c7acf3811ad88eaca6f4aa",
+            "ssh_username": "root",
+            "ssh_password": "root",
+            "ssh_port": 22,
+            "ssh_wait_timeout": "360s",
+            "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p",
+            "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+            "virtualbox_version_file": ".vbox_version",
+            "vm_name": "centos-7-x86_64-base",
+            "output_directory": "output-iso-base",
+            "vboxmanage": [
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--memory",
+                    "512"
+                ],
+                [
+                    "modifyvm",
+                    "{{.Name}}",
+                    "--cpus",
+                    "2"
+                ]
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "script": "configure-image.sh"
+        }
+    ]
+}
+```
+
+Com isso podemos agora criar o arquivo configure-image.sh que será usado para configurar o servidor após instalação do SO:
+
+Crie na pasta packer o arquivo **configure-image.sh**, neste arquivo você pode colocar todos os comandos que desejar para configurar o novo servidor, para uma instalação no virtualbox costumo fazer a instalação do vbox guest additions, pois melhora o suporte do virtualbox ao servidor virtual, abaixo segue o conteúdo que faz a instalação:
+
+
+
+
+
+
+
+
 
 
