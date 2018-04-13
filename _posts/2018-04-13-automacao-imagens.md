@@ -159,6 +159,14 @@ Com isso podemos agora criar o arquivo configure-image.sh que será usado para c
 Crie na pasta packer o arquivo **configure-image.sh**, neste arquivo você pode colocar todos os comandos que desejar para configurar o novo servidor, para uma instalação no virtualbox costumo fazer a instalação do vbox guest additions, pois melhora o suporte do virtualbox ao servidor virtual, abaixo segue o conteúdo que faz a instalação:
 
 
+Feito isso agora efetuamos o build via packer com o comando abaixo(o packer deve ser instalado antes):
+```bash
+packer build --force centos-7-base.json
+```
+Este comando deve ser executado de dentro da pasta do packer.
+
+No final do processo será criado uma pasta **output-iso-base** que conterá a imagem do sistema no formato vmdk, agora basta importar no virtualbox e ser feliz!
+
 
 
 
