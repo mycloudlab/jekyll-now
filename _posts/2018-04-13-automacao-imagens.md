@@ -167,3 +167,5 @@ Este comando deve ser executado de dentro da pasta do packer.
 
 No final do processo será criado uma pasta **output-iso-base** que conterá a imagem do sistema no formato vmdk, agora basta importar no virtualbox e ser feliz!
 
+
+
