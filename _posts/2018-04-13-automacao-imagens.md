@@ -14,4 +14,12 @@ Idealmente o melhor seria fazer a instalação do sistema operacional na vm de f
 
 Packer é um projeto da hashicorp que permite o build automatizado de imagens.
 
-O build é definido em código usando um arquivo em json, o builder permite a construção de 
+O build é definido em código usando um arquivo em json (template), um template permite a construção de imagens nas mais diversas tecnologias de virtualização, inclusive nuvem (amazon ec2).
+
+Após a criação das imagens pode ser feito o provisionamento do servidor usando bashscript, ansible, puppet, chef, etc...
+
+Pode ser definido um post-processador que após a geração do template, efetue a compactação da imagem, o envio para uma cloud, etc...
+
+Vamos a parte prática:
+
+
