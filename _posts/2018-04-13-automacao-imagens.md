@@ -1,7 +1,7 @@
 ---
 published: false
 layout: post
-title: Automatize a criação de templates de imagem
+title: Automatize a criação de templates de imagem com o Packer
 ---
 
 O docker representou uma mudança muito grande de paradigma, tanto para o desenvolvimento de aplicações como para a infraestrutura que sustenta estas aplicações.
@@ -167,5 +167,4 @@ Este comando deve ser executado de dentro da pasta do packer.
 
 No final do processo será criado uma pasta **output-iso-base** que conterá a imagem do sistema no formato vmdk, agora basta importar no virtualbox e ser feliz!
 
-
-
+Para demonstrar o processo foi feito um vídeo no youtube que você pode ver isso funcionando, acesse o link e veja: 
