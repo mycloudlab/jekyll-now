@@ -42,11 +42,13 @@ Os aceitos os valores:
 * redhat/openshift-ovs-multitenant
 * redhat/openshift-ovs-networkpolicy
 
+
+
 O valor default desta variável é 'redhat/openshift-ovs-subnet'.
 
 ## Rede do tipo ovs-multitenant
 
-Quando seu cluster está configurado para usar o plug-in SDN ovs-multitenant, você pode gerenciar a rede para um conjunto de projetos usando o utilitário de linha de comando **oc**.
+Quando seu cluster está configurado para usar o plug-in SDN **redhat/openshift-ovs-multitenant**, você pode gerenciar a rede para um conjunto de projetos usando o utilitário de linha de comando **oc**.
 
 ### Juntando a rede entre projetos
 
@@ -78,8 +80,98 @@ Para marcar um projeto como global usamos o seguinte comando:
 oc adm pod-network make-projects-global <project>
 ```
 No exemplo acima os pods do **<project>** acessam todos os serviços e pods de todo o cluster e todos os projetos do cluster acessam os serviços e pods do **<project>**.
+  
+  
+  \[TODO] - falar sobre como fazer o isolamento usando este tipo de rede e executar regras de iptables... Egress
+
+## Rede do tipo ovs-networkpolicy
+
+Kubernetes padronizou as politicas de rede usando um descritor chamado [NetworkPolicy](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/network/network-policy.md).
+
+Openshift da suporte a esta forma de definição de políticas de rede por meio do plugin SDN **redhat/openshift-ovs-networkpolicy**
+
+As políticas de rede deste plugin são criadas pelo administrador do projeto, criando ou removendo objetos do tipo NetworkPolicy.
+
+> IMPORTANTE: Quando não há uma politica definida, os pods e services são acessíveis a todo o cluster.
+
+### Funcionamento do NetworkPolicy
+
+O NetworkPolicy atua no tráfego de entrada e saida de um pod ou namespace. Para isso ele permite selecionar pods e namespaces pelos seus labels. Isso permite que regras sejam facilmente aplicadas quando um pod ou namespace contém um determinado label.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+    - namespaceSelector:
+        matchLabels:
+          project: myproject
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+    ports:
+    - protocol: TCP
+      port: 5978
+```
+
+**Campos obrigatórios**: Como todos os outros objetos em um cluster kubernetes, uma **NetworkPolicy** precisa dos campos **apiVersion**, **Kind** e **metadata**.
+
+**spec**: esta seção trás informações que são necessárias para definir uma política de rede para um determinado projeto/namespace.
+
+**podSelector**: Cada **NetworkPolicy** inclue um **podSelector** que é usado para agrupar os pods a que a **NetworkPolicy** se aplica. No exemplo acima esta politica de rede está sendo aplicado apenas aos pods que contém o label 'role=db' 
+
+Quando o valor de podSelector está vazio a regra será aplicada a todos os pods no namespace.
 
 
 
+
+
+
+
+
+Abaixo vemos alguns exemplos de políticas de rede:
+
+* Negar todo tráfego.
+
+Para tornar um projeto "negar por padrão", adicione um objeto NetworkPolicy que corresponda a todos os pods, mas não aceite tráfego.
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: deny-by-default
+spec:
+  podSelector:
+  ingress: []
+```
+
+
+
+Fontes:
+https://docs.openshift.org/latest/architecture/networking/networking.html
+https://docs.openshift.org/latest/architecture/networking/sdn.html
+https://docs.openshift.org/latest/admin_guide/managing_networking.html#admin-guide-networking-networkpolicy
+https://kubernetes.io/docs/concepts/services-networking/network-policies/
 
 
