@@ -189,9 +189,7 @@ No final do processo será criado uma pasta **output-iso-base** que conterá a i
 
 Para demonstrar o processo foi feito um vídeo no youtube que você pode ver isso funcionando, acesse o link e veja: 
 
-https://www.youtube.com/watch?v=KQ5DCl5WKI8
+https://www.youtube.com/watch?v=MqxfuhWJv60
 
 
-> Tente mover o mundo - o primeiro passo será mover a si mesmo. - Platão 
-
-
+> Tente mover o mundo - o primeiro passo será mover a si mesmo. - Platão
