@@ -42,8 +42,6 @@ Os aceitos os valores:
 * redhat/openshift-ovs-multitenant
 * redhat/openshift-ovs-networkpolicy
 
-
-
 O valor default desta variável é 'redhat/openshift-ovs-subnet'.
 
 ## Rede do tipo ovs-multitenant
