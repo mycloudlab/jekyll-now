@@ -92,7 +92,7 @@ Openshift da suporte a esta forma de definição de políticas de rede por meio 
 
 As políticas de rede deste plugin são criadas pelo administrador do projeto, criando ou removendo objetos do tipo NetworkPolicy.
 
-> IMPORTANTE: Quando não há uma politica definida, os pods e services são acessíveis a todo o cluster.
+> IMPORTANTE: Quando não há uma politica definida, os pods e services são acessíveis a todo o cluster, entretanto quando é criado uma política de rede, apenas o que estiver estipulado nas políticas é que será liberado.
 
 ### Funcionamento do NetworkPolicy
 
@@ -143,9 +143,16 @@ spec:
 
 Quando o valor de podSelector está vazio a regra será aplicada a todos os pods no namespace.
 
+**policyTypes**: Cada **NetworkPolicy** inclue uma **policyTypes**, contém uma lista que pode ser do tipo **Ingress**, **Egress** ou ambas. O campo **policyTypes** indica se a política se aplica ou não ao tráfego de entrada (ingress) ou saida (egress) para o pod selecionado.
 
+**ingress**: Cada **NetworkPolicy** pode incluir regra de entrada. Cada regra de entrada permite o tráfego para o que for definido no **from** para as portas especificadas na seção **ports**.
+Na política do exemplo contém uma regra única, que corresponde ao tráfego em uma única porta, de uma das três origens, a primeira especificada por meio de um **ipBlock**, a segunda por meio de um **namespaceSelector** e a terceira por meio de um **podSelector**.
 
+**egress**: Cada **NetworkPolicy** pode incluir uma lista de regras de saída. Cada regra permite o tráfego que corresponde para os destinos definidos nas seções **to** e **ports**.
 
+A política do exemplo contém uma única regra, que corresponde ao tráfego em uma única porta para qualquer destino em 10.0.0.0/24. Também é possível definir um **namespaceSelector** e um **podSelector**.
+
+Então no exemplo temos uma **NetworkPolicy**:
 
 
 
