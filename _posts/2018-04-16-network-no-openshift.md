@@ -154,12 +154,15 @@ A política do exemplo contém uma única regra, que corresponde ao tráfego em 
 
 Então no exemplo temos uma **NetworkPolicy**:
 
-
-
+* isolamento dos pods com o label 'role=db' no namespace/projeto 'default' para tráfego de entrada e saída (se eles não estivessem isolados)
+* permite conexões à porta TCP 6379 de pods 'role=db' no namespace/projeto 'default' de qualquer pod no namespace 'default' com o label 'role=frontend'
+* permite conexões à porta TCP 6379 de pods 'role=db' no namespace/projeto 'default' de qualquer pod em um namespace com o label 'project=myproject'
+* permite conexões à porta TCP 6379 de pods 'role=db' no namespace/projeto 'default' de endereços IP que estão no CIDR 172.17.0.0/16 e não no 172.17.1.0/24
+* permite conexões de qualquer pod no namespace 'default' com o label 'role=db' para o CIDR 10.0.0.0/24 na porta TCP 5978
 
 Abaixo vemos alguns exemplos de políticas de rede:
 
-* Negar todo tráfego.
+* Negar todo tráfego de entrada
 
 Para tornar um projeto "negar por padrão", adicione um objeto NetworkPolicy que corresponda a todos os pods, mas não aceite tráfego.
 
@@ -172,6 +175,81 @@ spec:
   podSelector:
   ingress: []
 ```
+
+* Aceitar conexões para pods no mesmo projeto
+
+Para aceitar conexões para outros pods em um projeto e rejeitar conexões para pods de outros projetos:
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-same-namespace
+spec:
+  podSelector:
+  ingress:
+  - from:
+    - podSelector: {}
+```
+
+Conforme exemplo feito na **NetworkPolicy: test-network-policy** podemos combinar diversas regras para adequação as necessidades.
+
+#### NetworkPolicy e Roteadores
+
+Ao usar o plug-in ovs-multitenant, o tráfego dos roteadores é automaticamente permitido em todos os namespaces. Isso ocorre porque os roteadores geralmente estão no namespace padrão e todos os namespaces permitem conexões de pods nesse namespace. Com o plug-in ovs-networkpolicy, isso não acontece automaticamente. Portanto, se você tiver uma política que isole um namespace por padrão, precisará executar etapas adicionais para permitir que os roteadores a acessem.
+
+Uma opção é criar uma política para cada serviço, permitindo o acesso de todas as origens:
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-to-database-service
+spec:
+  podSelector:
+    matchLabels:
+      role: database
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 5432
+```
+
+Neste exemplo é permitido acesso a outros pods que tenham a label 'role=database'. 
+
+Uma outra alternativa é permitir acesso completo a um determinado namespace como no ovs-multitenant:
+
+1. Adicione um label ao namespace default.
+
+ALERTA: Você só precisa fazer isso uma vez para todo o cluster. A função de administrador do cluster é necessária para adicionar labels a namespaces.
+
+```bash
+oc label namespace default name=default
+```
+
+2. Criar políticas que permitam conexões para o namespace
+
+IMPORTANTE: Execute esta etapa para cada espaço de nome no qual você deseja permitir conexões. Usuários com a função Administrador do Projeto podem criar políticas.
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: allow-from-default-namespace
+spec:
+  podSelector:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: default
+```
+
+#### Definindo uma NetworkPolicy default para novos projetos
+
+Os administradores de cluster podem modificar o modelo de projeto padrão para permitir a criação automática de objetos NetworkPolicy padrão (um ou mais), sempre que um novo projeto é criado. Para fazer isso:
+
+
 
 
 
