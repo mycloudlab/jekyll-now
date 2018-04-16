@@ -1,5 +1,5 @@
 ---
-published: true
+published: false
 layout: post
 title: Automatize a criação de templates de imagem com o Packer
 ---
