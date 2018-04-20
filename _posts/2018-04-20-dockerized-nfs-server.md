@@ -8,7 +8,14 @@ Recentemente precisei fazer um teste de um servidor nfs. Como gosto do docker pr
 Para criar um servidor nfs usei o comando:
 
 ```bash
-docker run -d --name nfs --net=host --privileged -v <dir>/nfsshare -e SYNC=true -e SHARED_DIRECTORY=/nfsshare itsthenetwork/nfs-server-alpine 
+docker run -d \
+  --name nfs \
+  --net=host \
+  --privileged \
+  -v <dir>/nfsshare \
+  -e SYNC=true \
+  -e SHARED_DIRECTORY=/nfsshare \
+  itsthenetwork/nfs-server-alpine 
 ```
 
 A imagem tem apenas 19MB.
