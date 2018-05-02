@@ -15,7 +15,13 @@ Para a escrita de um bom teste de carga, é necessário entender alguns conceito
 
 **Usuários simultâneos**
 
-Digamos que você solicitou aos seus colegas de trabalho que fossem a uma sala de reuniões, nesta sala você os orienta que executem o sistema fazendo uma série de passos dentro da aplicação.
+Digamos que você solicitou aos seus colegas de trabalho que fossem a uma sala de reuniões, nesta sala você os orienta que executem o sistema fazendo uma série de passos dentro da aplicação. Você diz vai. E eles começam... alguns usuários estão na tela de login, outros já estão no formulário preenchendo um cadastro, e ainda outros estão analisando a tela para decidir o que fazer, também tem um que parou para atender o telefone. 
+
+Estes são os usuários simultâneos. São um grupo de usuários que executam diversas ações no sistema alvo em um determinado tempo.
+
+**Taxa de transferência (throughput)**
+
+
 
 
 
