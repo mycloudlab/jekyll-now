@@ -1,15 +1,14 @@
 ---
 published: false
 ---
-Ao fazer um sistema e coloca-lo para funcionar em produção, as vezes não temos certeza do quanto o nosso sistema aguenta, e por segurança acabamos colocando diversos servidores disponíveis para a aplicação na esperança de que nada de errado. 
+Próximo da data de um lançamento de uma aplicação, um cliente solicitou que queria fazer um teste para garantir que o sistema pudesse suportar 10 mil usuários simultâneos. 
 
-Entretanto como podemos garantir isso? Garantir efetivamente que o sistema funciona para uma carga esperada e que não vai nos fazer passar vergonha? 
+Como não tinhamos esperiência nestes tipos de teste, surgiram diversas dúvidas. 10 mil usuários seriam 10 mil request por segundo? Como medir isso? Sabiamos da existência de frameworks que poderiam nos ajudar, como por exemplo o jmeter.
 
-São diversos fatores que em um ambiente produção que deve ser levado em conta para garantir que um sistema funciona adequadamente. Memória, configurações de rede, configurações específica da aplicação, tunning, e a lista está cada vez maior,....
+Bem o que é um teste de carga? Este questionamento é algo muito comum e é necessário entender o seu funcionamento para fazer simulações mais realistas com um sistema que irá para a produção.
 
-Para realmente garantir o correto funcionamento do sistema precisamos executar uma teste contra a aplicação. É necessário que a aplicação tenha uma boa bateria de testes pois caso contrário poderá dar a falsa sensação de que a aplicação está se comportando bem.
+Para nós, ao executarmos este tipo de teste, foi fundamental para encontrar problemas de configuração, que somente detectaríamos quando o aplicativo já estivesse em produção e com muitos usuários insatisfeitos.
 
+Um teste de carga tem como objetivo simular o trabalho que o sistema teria quando estivesse em produção. Neste tipo de teste não testamos apenas um componente isolado mais a pilha toda. Da chamada HTTP ao insert/update no banco de dados.
 
-
-
-
+Este tipo de teste 
