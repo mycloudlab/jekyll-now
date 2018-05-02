@@ -21,6 +21,16 @@ Estes são os usuários simultâneos. São um grupo de usuários que executam di
 
 **Taxa de transferência (throughput)**
 
+Esta unidade é mais simples de ser entendida. Ela está ligada a capacidade de processamento em um determinado tempo. Para ilustrar digamos que você tenha um servidor web (nginx) configurado e chegam nele 60 requisições http em 1 minuto, quantas requisições ele processou em 1 segundo? (60/60) = 1, 1 request por segundo, agora imagine que ele tenha recebido o dobro, 120 requisições no mesmo período, quantas requisições por segundo o servidor processou? (120/60) = 2, portanto o seu servidor foi capaz de processar 2 requisições por segundo.
+
+**script de carga**
+
+Os scripts são uma forma de simular o que os usuários devem fazer no sistema. Eles atuam como seus usuários virtuais.
+
+O jmeter tem um recurso interessante que permite a gravação da navegação do usuário gerando o script automaticamente, sendo que no final pouco ou nenhum ajuste é necessário nos scripts.
+
+
+
 
 
 
