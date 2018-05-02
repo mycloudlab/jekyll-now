@@ -29,7 +29,11 @@ Os scripts são uma forma de simular o que os usuários devem fazer no sistema. 
 
 O jmeter tem um recurso interessante que permite a gravação da navegação do usuário gerando o script automaticamente, sendo que no final pouco ou nenhum ajuste é necessário nos scripts.
 
+**Demonstração dos conceitos**
 
+Para demonstrar corretamente os conceitos para este artigo, usei a aplicação de demonstração [spring-petclinic](https://github.com/spring-projects/spring-petclinic).
+
+Uma boa prática é começar o teste de carga pequeno e ir avançando cada vez mais. Assim será possível dimensionar corretamente o sistema.
 
 
 
