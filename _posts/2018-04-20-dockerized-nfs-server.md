@@ -12,7 +12,7 @@ docker run -d \
   --name nfs \
   --net=host \
   --privileged \
-  -v <dir>/nfsshare \
+  -v <host_dir>:/nfsshare \
   -e SYNC=true \
   -e SHARED_DIRECTORY=/nfsshare \
   itsthenetwork/nfs-server-alpine 
